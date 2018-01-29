@@ -191,6 +191,10 @@ class InvoiceLine
     public function setProduct(Product $product)
     {
         $this->productId = $product->getId();
+        $product->getName() ? $this->description = $product->getName() : false;
+        $product->getPrice() ? $this->price = $product->getPrice() : false; // TODO get info from API
+        $product->getVat() ? $this->vat = $product->getVat() : false; // TODO get info from API
+        $product->getInvoiceAccountId() ? $this->accountId = $product->getInvoiceAccountId() : false; // TODO get info from API
     }
 
     /**

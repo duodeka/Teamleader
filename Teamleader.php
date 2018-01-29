@@ -15,6 +15,7 @@ use SumoCoders\Teamleader\Users\User;
 use SumoCoders\Teamleader\Notes\Note;
 use SumoCoders\Teamleader\Products\Product;
 use \SumoCoders\Teamleader\CustomFields\CustomField;
+use GrahamCampbell\Throttle\Throttle;
 
 /**
  * Teamleader class
@@ -207,6 +208,17 @@ class Teamleader
      */
     private function doCall($endPoint, array $fields = null)
     {
+        // throttle request to check for max api calls
+        $throttler = Throttle::get(['ip' => '127.0.0.1', 'route' => 'teamleader.call'], 25, 1);
+
+        if ( ! $throttler->attempt()) {
+            // Wait 6 seconds
+            sleep(6);
+
+            // Reset Thottle
+            $throttler->clear();
+        }
+
         // add credentials
         $fields['api_group'] = $this->getApiGroup();
         $fields['api_secret'] = $this->getApiSecret();
@@ -1357,7 +1369,7 @@ class Teamleader
      *                                   since that timestamp.
      * @return Product[]
      */
-    public function getProducts($amount = 100, $page = 0, $searchBy = null, $modifiedSince = null)
+    public function getProducts($amount = 100, $page = 0, $searchBy = null, $modifiedSince = null, $withAllInfo = false)
     {
         $fields = array();
         $fields['amount'] = (int) $amount;
@@ -1372,9 +1384,13 @@ class Teamleader
         $rawData = $this->doCall('getProducts.php', $fields);
         $return = array();
 
-        if (!empty($rawData)) {
-            foreach ($rawData as $row) {
-                $return[] = Product::initializeWithRawData($row);
+        if ($withAllInfo == true) {
+            // Get info per product to push to product::initialzewithrawdata
+        } else {
+            if (!empty($rawData)) {
+                foreach ($rawData as $row) {
+                    $return[] = Product::initializeWithRawData($row);
+                }
             }
         }
 

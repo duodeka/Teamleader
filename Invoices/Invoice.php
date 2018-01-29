@@ -124,9 +124,30 @@ class Invoice
     private $comments;
 
     /**
+     * @var bool
+     */
+    private $draft = false;
+
+    /**
      * @var array
      */
     private $customFields;
+
+    /**
+     * @param bool $draft
+     */
+    public function getDraft()
+    {
+        return $this->draft;
+    }
+
+    /**
+     * @param bool $draft
+     */
+    public function setDraft($draft)
+    {
+        $this->draft = $draft;
+    }
 
     /**
      * @return int
@@ -201,7 +222,7 @@ class Invoice
     }
 
     /**
-     * @param int $paid
+     * @param bool $paid
      */
     public function getPaid()
     {
@@ -642,6 +663,8 @@ class Invoice
         if ($this->getSysDepartmentId()) {
             $return['sys_department_id'] = $this->getSysDepartmentId();
         }
+
+        $return['draft_invoice'] = $this->getDraft() ? 1 : 0;
 
         $lines = $this->getLines();
         if (!empty($lines)) {
