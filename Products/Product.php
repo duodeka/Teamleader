@@ -170,7 +170,11 @@ class Product
                 case 'inv_account_id':
                     $product->setInvoiceAccountId($value);
                     break;
+                case 'prices':
+                    $price = floatval($value[0]['price_excl_vat']);
 
+                    $product->setPrice($price);
+                    break;
                 default:
                     // Ignore empty values
                     if ($value == '') {
