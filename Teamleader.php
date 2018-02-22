@@ -15,7 +15,7 @@ use SumoCoders\Teamleader\Users\User;
 use SumoCoders\Teamleader\Notes\Note;
 use SumoCoders\Teamleader\Products\Product;
 use \SumoCoders\Teamleader\CustomFields\CustomField;
-use GrahamCampbell\Throttle\Throttle;
+use GrahamCampbell\Throttle\Facades\Throttle;
 
 /**
  * Teamleader class
@@ -1385,7 +1385,10 @@ class Teamleader
         $return = array();
 
         if ($withAllInfo == true) {
-            // Get info per product to push to product::initialzewithrawdata
+            foreach ($rawData as $productData) {
+                // foreach product let getproduct function handle the product initialization
+                $return[] = $this->getProduct($productData['id']);
+            }
         } else {
             if (!empty($rawData)) {
                 foreach ($rawData as $row) {
