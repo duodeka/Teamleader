@@ -713,7 +713,7 @@ class Teamleader
 
         if (!empty($rawData)) {
             foreach ($rawData as $row) {
-                if (!is_array($rawData)) {
+                if (is_array($rawData)) {
                     $return[] = Company::initializeWithRawData($row);
                 }
             }
