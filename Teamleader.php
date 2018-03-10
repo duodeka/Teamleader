@@ -713,8 +713,14 @@ class Teamleader
 
         if (!empty($rawData)) {
             foreach ($rawData as $row) {
-                if (is_array($rawData)) {
+                if (is_array($row)) {
                     $return[] = Company::initializeWithRawData($row);
+                } else {
+                    try {
+                        \Log::error('Teamleader.php @719: row is no array: ' . json_encode($row));
+                    } catch(\Exception $e) {
+                        \Log::error('Teamleader.php @719: row is no array.');
+                    }
                 }
             }
         }
@@ -1394,7 +1400,15 @@ class Teamleader
         } else {
             if (!empty($rawData)) {
                 foreach ($rawData as $row) {
-                    $return[] = Product::initializeWithRawData($row);
+                    if(is_array($row)) {
+                        $return[] = Product::initializeWithRawData($row);
+                    } else {
+                        try {
+                            \Log::error('Teamleader.php @1407: row is no array: ' . json_encode($row));
+                        } catch(\Exception $e) {
+                            \Log::error('Teamleader.php @1407: row is no array.');
+                        }
+                    }
                 }
             }
         }
